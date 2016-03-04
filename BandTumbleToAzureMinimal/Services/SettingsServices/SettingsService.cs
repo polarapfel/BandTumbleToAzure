@@ -22,7 +22,7 @@ namespace BandTumbleToAzureMinimal.Services.SettingsServices
 
         public bool UseShellBackButton
         {
-            get { return _helper.Read<bool>(nameof(UseShellBackButton), true); }
+            get { return _helper.Read<bool>(nameof(UseShellBackButton), false); }
             set
             {
                 _helper.Write(nameof(UseShellBackButton), value);

@@ -5,6 +5,7 @@ using BandTumbleToAzureMinimal.Services.SettingsServices;
 using Windows.ApplicationModel.Activation;
 using Template10.Mvvm;
 using Template10.Common;
+using BandTumbleToAzureMinimal.Services.BandServices;
 
 namespace BandTumbleToAzureMinimal
 {
@@ -23,6 +24,7 @@ namespace BandTumbleToAzureMinimal
             ShowShellBackButton = _settings.UseShellBackButton;
 
             #endregion
+
         }
 
         public override async Task OnInitializeAsync(IActivatedEventArgs args)
@@ -37,6 +39,18 @@ namespace BandTumbleToAzureMinimal
 
             NavigationService.Navigate(typeof(Views.MainPage));
             await Task.CompletedTask;
+
+            #region Band stuff
+
+            var _bandService = BandService.Instance;
+            await _bandService.InitBand();
+
+            var _hwVersion = _bandService.HardwareVersion;
+            var _fwVersion = _bandService.FirmwareVersion;
+
+            #endregion
+
+
         }
     }
 }
