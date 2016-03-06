@@ -11,12 +11,16 @@ namespace BandTumbleToAzureMinimal.Services.BandServices
     class BandService
     {
 
-        private IBandInfo[] PairedBands;
-        private IBandClient BandClient;
+        private IBandInfo[] _pairedBands;
+        private IBandClient _bandClient;
+
+        private IBandInfo _pairedBand;
 
         private String _firmwareVersion;
         private String _hardwareVersion;
 
+        private bool _isInit = false;
+        
         public static BandService Instance { get; }
         static BandService()
         {
@@ -24,29 +28,35 @@ namespace BandTumbleToAzureMinimal.Services.BandServices
             Instance = Instance ?? new BandService();
         }
 
-        public async Task InitBand()
+        public async Task InitBand(Boolean force)
         {
             var _bandService = BandService.Instance;
-            _bandService.PairedBands = await BandClientManager.Instance.GetBandsAsync();
-            if (PairedBands.Length != 0)
+            if (!_isInit || force)
             {
-                try
+                _bandService._pairedBands = await BandClientManager.Instance.GetBandsAsync();
+                if (_pairedBands.Length != 0)
                 {
-                    using (BandClient = await BandClientManager.Instance.ConnectAsync(PairedBands[0])) // init with first Band found
+                    _pairedBand = _pairedBands[0];
+                    try
                     {
-                        // set up stuff after successful connection
-                        _firmwareVersion = await BandClient.GetFirmwareVersionAsync();
-                        _hardwareVersion = await BandClient.GetHardwareVersionAsync();
+                        using (_bandClient = await BandClientManager.Instance.ConnectAsync(_pairedBands[0])) // init with first Band found
+                        {
+                            // set up stuff after successful connection
+                            _firmwareVersion = await _bandClient.GetFirmwareVersionAsync();
+                            _hardwareVersion = await _bandClient.GetHardwareVersionAsync();
+                        }
+                        _isInit = true;
+                    }
+                    catch (BandException ex)
+                    {
+                        // handle Band exceptions
                     }
                 }
-                catch (BandException ex)
+                else
                 {
-                    // handle Band exceptions
+                    // do something to indicate no Band was found.
+                    _isInit = false;
                 }
-            }
-            else
-            {
-                // do something to indicate no Band was found.
             }
         }
 
@@ -65,26 +75,23 @@ namespace BandTumbleToAzureMinimal.Services.BandServices
                 return _firmwareVersion;
             }
         }
+
+        public IBandClient BandClient
+        {
+            get
+            {
+                if (_isInit) return _bandClient;
+                else return null;
+            }
+        }
+
+        public IBandInfo PairedBand
+        {
+            get
+            {
+                if (_isInit) return _pairedBand;
+                else return null;
+            }
+        }
     }
 }
-
-//using (IBandClient bandClient = await BandClientManager.Instance.ConnectAsync(pairedBands[0]))
-//                {
-//                    int samplesReceived = 0; // the number of Accelerometer samples received
-
-//List<BandSensorReadingEventArgs<IBandAccelerometerReading>> _args = new List<BandSensorReadingEventArgs<IBandAccelerometerReading>>();
-
-//// Subscribe to Accelerometer data.
-//bandClient.SensorManager.Accelerometer.ReadingChanged += (s, args) => {
-//                        //_args[samplesReceived] = args;
-//                        _args.Add(args);
-//                        samplesReceived++;
-//                    };
-//                    await bandClient.SensorManager.Accelerometer.StartReadingsAsync();
-
-//// Receive Accelerometer data for a while, then stop the subscription.
-//await Task.Delay(TimeSpan.FromSeconds(20));
-//                    await bandClient.SensorManager.Accelerometer.StopReadingsAsync();
-
-//                    this.viewModel.StatusMessage = string.Format("Done. {0} Accelerometer samples were received.", samplesReceived);
-//                }
