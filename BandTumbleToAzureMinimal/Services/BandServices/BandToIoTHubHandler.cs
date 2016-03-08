@@ -12,7 +12,7 @@ namespace BandTumbleToAzureMinimal.Services.BandServices
 {
     class BandToIoTHubHandler : IBandServiceHandler
     {
-        private const string deviceConnectionString = "HostName=TumbleHub.azure-devices.net;DeviceId=BandDevice;SharedAccessKey=Tt8Jx/A5OrJZMDG22BJdeDjHqtRSK8439ELWimjJCs4=";
+        private const string deviceConnectionString = "";
         private HardwareToken ASHWID;
 
         private IBandServiceHandler _next = null;
