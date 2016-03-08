@@ -44,6 +44,7 @@ namespace BandTumbleToAzureMinimal.Services.BandServices
                             // set up stuff after successful connection
                             _firmwareVersion = await _bandClient.GetFirmwareVersionAsync();
                             _hardwareVersion = await _bandClient.GetHardwareVersionAsync();
+                            
                         }
                         _isInit = true;
                     }

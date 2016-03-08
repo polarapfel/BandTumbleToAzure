@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace BandTumbleToAzureMinimal.Services.BandServices
 {
-    class BandAccelerometerService
+    class BandHeartRateService
     {
 
         private BandService _bandService = BandService.Instance;
@@ -18,11 +18,11 @@ namespace BandTumbleToAzureMinimal.Services.BandServices
         private int samplesReceived = 0; // the number of Accelerometer samples received
         private Boolean isRunning = false;
 
-        private ConcurrentQueue<BandSensorReadingEventArgs<IBandAccelerometerReading>> _readingsQueue = new ConcurrentQueue<BandSensorReadingEventArgs<IBandAccelerometerReading>>();
+        private ConcurrentQueue<BandSensorReadingEventArgs<IBandHeartRateReading>> _readingsQueue = new ConcurrentQueue<BandSensorReadingEventArgs<IBandHeartRateReading>>();
 
-        public static BandAccelerometerService Instance { get; }
+        public static BandHeartRateService Instance { get; }
 
-        public ConcurrentQueue<BandSensorReadingEventArgs<IBandAccelerometerReading>> ReadingsQueue
+        public ConcurrentQueue<BandSensorReadingEventArgs<IBandHeartRateReading>> ReadingsQueue
         {
             get
             {
@@ -30,26 +30,31 @@ namespace BandTumbleToAzureMinimal.Services.BandServices
             }
         }
 
-        static BandAccelerometerService()
+        static BandHeartRateService()
         {
             // implement singleton pattern
-            Instance = Instance ?? new BandAccelerometerService();
+            Instance = Instance ?? new BandHeartRateService();
         }
 
         public async Task Start(Boolean reset)
         {
-            //_bandClient = _bandService.BandClient;
+            _bandClient = _bandService.BandClient;
             _pairedBand = _bandService.PairedBand;
+
+            if (_bandClient.SensorManager.HeartRate.GetCurrentUserConsent() != UserConsent.Granted)
+            {
+                await _bandClient.SensorManager.HeartRate.RequestUserConsentAsync();
+            }
+
             using (_bandClient = await BandClientManager.Instance.ConnectAsync(_pairedBand))
             {
-                // Subscribe to Accelerometer data.
-                _bandClient.SensorManager.Accelerometer.ReadingChanged += (s, args) =>
+                // Subscribe to Heart Rate data.
+                _bandClient.SensorManager.HeartRate.ReadingChanged += (s, args) =>
                 {
-                    var foo = "bar";
                     _readingsQueue.Enqueue(args);
                     samplesReceived++;
                 };
-                await _bandClient.SensorManager.Accelerometer.StartReadingsAsync();
+                await _bandClient.SensorManager.HeartRate.StartReadingsAsync();
             }
         }
 
@@ -57,7 +62,7 @@ namespace BandTumbleToAzureMinimal.Services.BandServices
         {
             _bandClient = _bandService.BandClient;
             _pairedBand = _bandService.PairedBand;
-            await _bandClient.SensorManager.Accelerometer.StopReadingsAsync();
+            await _bandClient.SensorManager.HeartRate.StopReadingsAsync();
         }
     }
 }

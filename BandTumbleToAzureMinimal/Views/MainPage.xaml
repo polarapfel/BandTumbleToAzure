@@ -24,7 +24,7 @@
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
                         <!--  TODO: change properties for narrow view  -->
-                        <Setter Target="stateTextBox.Text" Value="Narrow Visual State" />
+                        <!--<Setter Target="stateTextBox.Text" Value="Narrow Visual State" />-->
                     </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="VisualStateNormal">
@@ -33,7 +33,7 @@
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
                         <!--  TODO: change properties for normal view  -->
-                        <Setter Target="stateTextBox.Text" Value="Normal Visual State" />
+                        <!--<Setter Target="stateTextBox.Text" Value="Normal Visual State" />-->
                     </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="VisualStateWide">
@@ -42,13 +42,13 @@
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
                         <!--  TODO: change properties for wide view  -->
-                        <Setter Target="stateTextBox.Text" Value="Wide Visual State" />
+                        <!--<Setter Target="stateTextBox.Text" Value="Wide Visual State" />-->
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
 
-        <controls:PageHeader x:Name="pageHeader" Text="Main Page" BackButtonVisibility="Visible">
+        <controls:PageHeader x:Name="pageHeader" Text="Sensors" BackButtonVisibility="Visible" Opened="pageHeader_Opened">
             <!--  place stretched, across top  -->
             <RelativePanel.AlignTopWithPanel>True</RelativePanel.AlignTopWithPanel>
             <RelativePanel.AlignRightWithPanel>True</RelativePanel.AlignRightWithPanel>
@@ -61,8 +61,8 @@
             </controls:PageHeader.SecondaryCommands>
         </controls:PageHeader>
 
-        <controls:Resizer x:Name="parameterResizer" Margin="16,16,16,0">
-            <!--  place below page header  -->
+        <!--<controls:Resizer x:Name="parameterResizer" Margin="16,16,16,0">
+            --><!--  place below page header  --><!--
             <RelativePanel.Below>pageHeader</RelativePanel.Below>
             <RelativePanel.AlignLeftWithPanel>True</RelativePanel.AlignLeftWithPanel>
             <TextBox MinWidth="150" MinHeight="62"
@@ -70,11 +70,11 @@
                      Text="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                      TextWrapping="Wrap">
                 <Interactivity:Interaction.Behaviors>
-                    <!--  enable submit on enter key  -->
+                    --><!--  enable submit on enter key  --><!--
                     <Behaviors:KeyBehavior Key="Enter">
                         <Core:CallMethodAction MethodName="GotoDetailsPage" TargetObject="{Binding}" />
                     </Behaviors:KeyBehavior>
-                    <!--  focus on textbox when page loads  -->
+                    --><!--  focus on textbox when page loads  --><!--
                     <Core:EventTriggerBehavior>
                         <Behaviors:FocusAction />
                     </Core:EventTriggerBehavior>
@@ -83,16 +83,22 @@
         </controls:Resizer>
 
         <Button x:Name="submitButton" Click="{x:Bind ViewModel.GotoDetailsPage}" Content="Submit">
-            <!--  place next to textbox  -->
+            --><!--  place next to textbox  --><!--
             <RelativePanel.RightOf>parameterResizer</RelativePanel.RightOf>
             <RelativePanel.AlignBottomWith>parameterResizer</RelativePanel.AlignBottomWith>
-        </Button>
+        </Button>-->
 
-        <TextBlock x:Name="stateTextBox" Margin="16,16,0,0" Text="Current Visual State">
-            <!--  place under to textbox  -->
+        <ToggleSwitch x:Name="toggleHeartRate" Header="Heart Rate" HorizontalAlignment="Left" Height="60" VerticalAlignment="Top" Width="154" Toggled="toggleHeartRate_Click" Margin="10">
+            <RelativePanel.Below>pageHeader</RelativePanel.Below>
+            <RelativePanel.AlignLeftWithPanel>True</RelativePanel.AlignLeftWithPanel>
+        </ToggleSwitch>
+        <TextBlock x:Name="toggleHeartRateFeedback" Text="No Feedback" Margin="169,58,-168.8,-58"></TextBlock>
+ 
+        <!--<TextBlock x:Name="stateTextBox" Margin="16,16,0,0" Text="Current Visual State">
+            --><!--  place under to textbox  --><!--
             <RelativePanel.Below>parameterResizer</RelativePanel.Below>
             <RelativePanel.AlignLeftWith>parameterResizer</RelativePanel.AlignLeftWith>
-        </TextBlock>
+        </TextBlock>-->
 
     </RelativePanel>
 </Page>

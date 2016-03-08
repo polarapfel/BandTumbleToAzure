@@ -42,14 +42,17 @@ namespace BandTumbleToAzureMinimal
 
             #region Band stuff
 
-            var _bandService = BandService.Instance;
-            await _bandService.InitBand();
+            //var _bandService = BandService.Instance;
+            //await _bandService.InitBand(false);
 
-            var _hwVersion = _bandService.HardwareVersion;
-            var _fwVersion = _bandService.FirmwareVersion;
+            //var _hwVersion = _bandService.HardwareVersion;
+            //var _fwVersion = _bandService.FirmwareVersion;
 
             #endregion
 
+            //just to try if stuff is working
+            //await BandSensorHandlerClient.Process();
+            //await Task.Delay(TimeSpan.FromSeconds(5));
 
         }
     }
