@@ -15,6 +15,7 @@ namespace BandTumbleToAzureMinimal.Views
 {
     public sealed partial class MainPage : Page
     {
+        //
 
         #region instance stuff
         private ConcurrentQueue<BandSensorReadingEventArgs<IBandHeartRateReading>> HeartRateReadingsQueue = new ConcurrentQueue<BandSensorReadingEventArgs<IBandHeartRateReading>>();
