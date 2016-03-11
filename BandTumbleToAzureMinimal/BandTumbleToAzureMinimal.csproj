@@ -91,8 +91,8 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
+    <None Include="BandTumbleToAzureMinimal_TemporaryKey.pfx" />
     <None Include="project.json" />
-    <None Include="Service References\IotHubCogedim\ConnectedService.json" />
     <None Include="Service References\TumbleHub\ConnectedService.json" />
   </ItemGroup>
   <ItemGroup>
