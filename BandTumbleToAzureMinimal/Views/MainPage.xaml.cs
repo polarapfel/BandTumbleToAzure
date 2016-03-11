@@ -15,6 +15,7 @@ namespace BandTumbleToAzureMinimal.Views
 {
     public sealed partial class MainPage : Page
     {
+        //
 
         #region instance stuff
         private ConcurrentQueue<BandSensorReadingEventArgs<IBandHeartRateReading>> HeartRateReadingsQueue = new ConcurrentQueue<BandSensorReadingEventArgs<IBandHeartRateReading>>();
@@ -33,7 +34,7 @@ namespace BandTumbleToAzureMinimal.Views
             IBandInfo[] pairedBands;
             bool state = this.toggleHeartRate.IsOn;
 
-            #region toggledOn
+            #region toggledHeartOn
             if (this.toggleHeartRate.IsOn)
             {
                 #region InitBandClient
@@ -48,7 +49,7 @@ namespace BandTumbleToAzureMinimal.Views
                         this.toggleHeartRate.IsOn = false;
                         return; // nothing to do
                     }
-                    if (pairedBands.Length > 1)
+                    if (pairedBands.Length >= 1)
                     {
                         this.toggleHeartRateFeedback.Text = "Trying to connect.";
                         try
@@ -103,9 +104,17 @@ namespace BandTumbleToAzureMinimal.Views
 
                             //int samplesReceived = 0; // the number of Accelerometer samples received
                             // Subscribe to Accelerometer data.
-                            bandClient.SensorManager.HeartRate.ReadingChanged += (s, args) =>
+                            bandClient.SensorManager.HeartRate.ReadingChanged += async (s, args) =>
                             {
+
+                                string HeartRate = "{deviceId: 'Band2Benjamin', timestamp: '" + args.SensorReading.Timestamp.UtcDateTime.ToString() + "', valuetype :'HeartRate' , value: '" + args.SensorReading.HeartRate.ToString() + "' }";
+                                string HeartQuality = "{deviceId: 'Band2Benjamin', timestamp: '" + args.SensorReading.Timestamp.UtcDateTime.ToString() + "', valuetype :'HeartQuality' , value: '" + args.SensorReading.Quality.ToString() + "' }";
+
+                                await AzureIoTHub.SendDeviceToCloudMessageAsync(HeartRate);
+                                await AzureIoTHub.SendDeviceToCloudMessageAsync(HeartQuality);
+                                
                                 this.HeartRateReadingsQueue.Enqueue(args);
+
                             };
 
                             try
@@ -127,7 +136,7 @@ namespace BandTumbleToAzureMinimal.Views
                 #endregion
             }
             #endregion
-            #region toggledOff
+            #region toggledHeartOff
             else
             {
                 if (bandClient != null)
